@@ -15,12 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-libtun_sources = files('ogs-tun.h')
+libtun_sources = files('''
+    ogs-tun.h
 
-if host_system == 'darwin'
-    libtun_sources += files('ogs-utun.c')
+    tunio.c
+'''.split())
+
+if host_system == 'linux'
+    libtun_sources += files('linux-setup.c')
+elif host_system == 'windows'
+    libtun_sources += files('windows-setup.c')
 else
-    libtun_sources += files('ogs-tun.c')
+    libtun_sources += files('mac-setup.c')
 endif
 
 libtun_inc = include_directories('.')
