@@ -18,6 +18,7 @@
  */
 
 #include "ogs-tun.h"
+#include "ipfw/ipfw2.h"
 
 #undef OGS_LOG_DOMAIN
 #define OGS_LOG_DOMAIN __ogs_sock_domain
@@ -207,19 +208,6 @@ static int tun_set_ipv4(char *ifname,
     close(fd); /* PF_ROUTE, SOCK_RAW */
 
 	return OGS_OK;
-}
-
-static int contigmask(uint8_t *p, int len)
-{
-	int i, n;
-
-	for (i=0; i<len ; i++)
-		if ( (p[i/8] & (1 << (7 - (i%8)))) == 0) /* first bit unset */
-			break;
-	for (n=i+1; n < len; n++)
-		if ( (p[n/8] & (1 << (7 - (n%8)))) != 0)
-			return -1; /* mask not contiguous */
-	return i;
 }
 
 static int tun_set_ipv6(char *ifname,
