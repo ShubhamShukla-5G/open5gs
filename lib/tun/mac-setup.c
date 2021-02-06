@@ -38,9 +38,7 @@
 #include <sys/kern_control.h>
 #endif
 
-static int unit = 0;
-
-static int utun_open(char *ifname, socklen_t len)
+static int utun_open(int unit, char *ifname, socklen_t maxlen)
 {
 	struct sockaddr_ctl addr;
 	struct ctl_info info;
@@ -48,7 +46,7 @@ static int utun_open(char *ifname, socklen_t len)
 	int err = 0;
 
     ogs_assert(ifname);
-    ogs_assert(len);
+    ogs_assert(maxlen);
 
 	fd = socket(PF_SYSTEM, SOCK_DGRAM, SYSPROTO_CONTROL);
 	if (fd < 0) return fd;
@@ -68,7 +66,7 @@ static int utun_open(char *ifname, socklen_t len)
 	err = connect(fd, (struct sockaddr *)&addr, sizeof (addr));
 	if (err != 0) goto on_error;
 
-	err = getsockopt(fd, SYSPROTO_CONTROL, UTUN_OPT_IFNAME, ifname, &len);
+	err = getsockopt(fd, SYSPROTO_CONTROL, UTUN_OPT_IFNAME, ifname, &maxlen);
 	if (err != 0) goto on_error;
 
 on_error:
@@ -80,15 +78,16 @@ on_error:
 	return fd;
 }
 
-ogs_socket_t ogs_tun_open(char *ifname, int len, int is_tap)
+ogs_socket_t ogs_tun_open(char *ifname, int maxlen, int is_tap)
 {
     ogs_socket_t fd = INVALID_SOCKET;
+    int unit;
 
     ogs_assert(ifname);
 
 #define TUNTAP_ID_MAX 256
     for (unit = 0; unit < TUNTAP_ID_MAX; unit++) {
-        if ((fd = utun_open(ifname, len)) > 0) {
+        if ((fd = utun_open(unit, ifname, maxlen)) > 0) {
             break;
         }
     }
@@ -218,24 +217,23 @@ static int tun_set_ipv6(char *ifname,
     int ret = 0, out_return_code = 0;
 
     const char *commandLine[OGS_ARG_MAX];
-    char devname[32];
     char addr[128];
 
     char buf[OGS_ADDRSTRLEN];
     int prefixlen;
 
+    ogs_assert(ifname);
     ogs_assert(ipsub);
     ogs_assert(ipaddr);
 
 #define IPV6_BITLEN    (OGS_IPV6_LEN * 8)
     prefixlen = contigmask((uint8_t *)ipsub->mask, IPV6_BITLEN);
 
-    ogs_snprintf(devname, sizeof devname, "utun%d", unit);
     ogs_snprintf(addr, sizeof addr, "%s/%d",
             OGS_INET6_NTOP(ipaddr->sub, buf), prefixlen);
 
     commandLine[0] = "/sbin/ifconfig";
-    commandLine[1] = devname;
+    commandLine[1] = ifname;;
     commandLine[2] = "inet6";
     commandLine[3] = addr;
     commandLine[4] = "up";
