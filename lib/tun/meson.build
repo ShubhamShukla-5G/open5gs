@@ -15,20 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-libinc = include_directories('.')
+libtun_sources = files('ogs-tun.h')
 
-subdir('core')
-subdir('ipfw')
-subdir('crypt')
-subdir('app')
-subdir('sctp')
-subdir('tun')
-subdir('dbi')
-subdir('diameter')
-subdir('asn1c')
-subdir('ngap')
-subdir('s1ap')
-subdir('nas')
-subdir('gtp')
-subdir('pfcp')
-subdir('sbi')
+if host_system == 'darwin'
+    libtun_sources += files('ogs-utun.c')
+else
+    libtun_sources += files('ogs-tun.c')
+endif
+
+libtun_inc = include_directories('.')
+
+libtun = library('ogstun',
+    sources : libtun_sources,
+    version : libogslib_version,
+    c_args : '-DOGS_TUN_COMPILATION',
+    include_directories : [libtun_inc, libinc],
+    dependencies : libcore_dep,
+    install : true)
+
+libtun_dep = declare_dependency(
+    link_with : libtun,
+    include_directories : [libtun_inc, libinc],
+    dependencies : libcore_dep)
