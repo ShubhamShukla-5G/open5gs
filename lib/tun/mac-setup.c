@@ -36,7 +36,6 @@
 #include <net/if_utun.h>
 #include <sys/kern_event.h>
 #include <sys/kern_control.h>
-#endif
 
 static int utun_open(int unit, char *ifname, socklen_t maxlen)
 {
@@ -77,6 +76,7 @@ on_error:
 
 	return fd;
 }
+#endif
 
 ogs_socket_t ogs_tun_open(char *ifname, int maxlen, int is_tap)
 {
@@ -87,9 +87,20 @@ ogs_socket_t ogs_tun_open(char *ifname, int maxlen, int is_tap)
 
 #define TUNTAP_ID_MAX 256
     for (unit = 0; unit < TUNTAP_ID_MAX; unit++) {
+#if defined(__APPLE__)
+        /* MacOSX "utun" device driver */
         if ((fd = utun_open(unit, ifname, maxlen)) > 0) {
             break;
         }
+#else
+        /* FreeBSD "tun" device driver */
+        char name[IFNAMSIZ];
+        ogs_snprintf(name, sizeof(name), "/dev/tun%i", unit);
+        if ((fd = open(name, O_RDWR)) > 0) {
+            ogs_snprintf(ifname, maxlen, "tun%i", unit);
+            break;
+        }
+#endif
     }
     if (fd < 0) {
         ogs_log_message(OGS_LOG_ERROR, ogs_socket_errno, "open() failed");
