@@ -109,6 +109,7 @@ extern "C" {
 
 #elif defined(__FreeBSD__)
 #include <sys/endian.h>
+#define HAVE_NTOHLL 1 /* For freeDiameter */
 #endif
 
 #ifndef WORDS_BIGENDIAN

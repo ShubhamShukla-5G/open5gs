@@ -350,6 +350,7 @@ static void sbi_message_test4(abts_case *tc, void *data)
     struct tm tm;
     bool rc;
 
+#if !defined(__FreeBSD__)
     rc = ogs_sbi_time_from_string(&t, "1985-04-12T23:20:50.52");
     ABTS_INT_EQUAL(tc, 1, rc);
 
@@ -363,6 +364,7 @@ static void sbi_message_test4(abts_case *tc, void *data)
     ABTS_INT_EQUAL(tc, 0, tm.tm_isdst);
     ABTS_INT_EQUAL(tc, 0, tm.tm_gmtoff);
     ABTS_TRUE(tc, t == 482196050520000LL);
+#endif
 
     rc = ogs_sbi_time_from_string(&t, "1996-12-19T16:39:57-0800");
     ABTS_INT_EQUAL(tc, 1, rc);
@@ -396,6 +398,7 @@ static void sbi_message_test4(abts_case *tc, void *data)
     ABTS_INT_EQUAL(tc, 0, tm.tm_gmtoff);
     ABTS_TRUE(tc, t == 851042397000000LL);
 
+#if !defined(__FreeBSD__)
     rc = ogs_sbi_time_from_string(&t, "1990-12-31T23:59:60Z");
     ABTS_INT_EQUAL(tc, 1, rc);
 
@@ -409,6 +412,7 @@ static void sbi_message_test4(abts_case *tc, void *data)
     ABTS_INT_EQUAL(tc, 0, tm.tm_isdst);
     ABTS_INT_EQUAL(tc, 0, tm.tm_gmtoff);
     ABTS_TRUE(tc, t == 662688000000000LL);
+#endif
 
     rc = ogs_sbi_time_from_string(&t, "1990-12-31T15:59:60-0800");
     ABTS_INT_EQUAL(tc, 1, rc);
