@@ -29,6 +29,10 @@ testunit_unit_sources = files('''
 testunit_unit_exe = executable('unit',
     sources : testunit_unit_sources,
     c_args : [testunit_core_cc_flags, sbi_cc_flags],
-    dependencies : [libtestapp_dep, libmme_dep, libsbi_dep])
+    dependencies : [libs1ap_dep,
+                    libgtp_dep,
+                    libngap_dep,
+                    libnas_eps_dep,
+                    libsbi_dep])
 
 test('unit', testunit_unit_exe, is_parallel : false, suite: 'unit')
