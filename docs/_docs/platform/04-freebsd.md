@@ -3,7 +3,7 @@ title: FreeBSD
 head_inline: "<style> .blue { color: blue; } </style>"
 ---
 
-This guide is based on **FreeBSD Relase 11.1**.
+This guide is based on **FreeBSD-12.2-STABLE**.
 {: .blue}
 
 ### Getting MongoDB
@@ -11,7 +11,7 @@ This guide is based on **FreeBSD Relase 11.1**.
 
 Install MongoDB with package manager.
 ```bash
-$ sudo pkg install mongodb
+$ sudo pkg install mongodb44
 ```
 
 Run MongoDB server.
@@ -20,10 +20,10 @@ $ mkdir -p ./data/db
 $ mongod --dbpath ./data/db
 ```
 
-### Setting up TUN device (No persistent after rebooting)
+### Setting up network (No persistent after rebooting)
 ---
 
-Configure the TUN device.
+Configure the loopback interface.
 ```bash
 $ sudo ifconfig lo0 alias 127.0.0.2 netmask 255.255.255.255
 $ sudo ifconfig lo0 alias 127.0.0.3 netmask 255.255.255.255
@@ -38,15 +38,23 @@ $ sudo ifconfig lo0 alias 127.0.0.10 netmask 255.255.255.255
 $ sudo ifconfig lo0 alias 127.0.0.11 netmask 255.255.255.255
 $ sudo ifconfig lo0 alias 127.0.0.12 netmask 255.255.255.255
 $ sudo ifconfig lo0 alias 127.0.0.13 netmask 255.255.255.255
+$ sudo ifconfig lo0 alias 127.0.0.14 netmask 255.255.255.255
+$ sudo ifconfig lo0 alias 127.0.0.15 netmask 255.255.255.255
+$ sudo ifconfig lo0 alias 127.0.0.16 netmask 255.255.255.255
+$ sudo ifconfig lo0 alias 127.0.0.17 netmask 255.255.255.255
+$ sudo ifconfig lo0 alias 127.0.0.18 netmask 255.255.255.255
+$ sudo ifconfig lo0 alias 127.0.0.19 netmask 255.255.255.255
+$ sudo ifconfig lo0 alias 127.0.0.20 netmask 255.255.255.255
 ```
 
 Enable IP forwarding
 ```bash
 $ sudo sysctl -w net.inet.ip.forwarding=1
+$ sudo sysctl -w net.inet6.ip6.forwarding=1
 ```
 
-**Tip:** The script provided in [$GIT_REPO/support/network/restart.sh](https://github.com/{{ site.github_username }}/open5gs/blob/master/support/network/restart.sh) makes it easy to configure the TUN device as follows:  
-`$ sudo ./support/network/restart.sh`
+**Tip:** The script provided in [$GIT_REPO/misc/netconf.sh](https://github.com/{{ site.github_username }}/open5gs/blob/master/misc/netconf.sh) makes it easy to configure the TUN device as follows:
+`$ sudo ./misc/netconf.sh`
 {: .notice--info}
 
 ### Building Open5GS
@@ -54,13 +62,18 @@ $ sudo sysctl -w net.inet.ip.forwarding=1
 
 Install the depedencies for building the source code.
 ```bash
-$ sudo pkg install py36-pip ninja gcc bison gsed pkgconf git mongo-c-driver gnutls libgcrypt libidn libyaml libmicrohttpd curl
+$ sudo pkg install meson ninja gcc bison gsed pkgconf git mongo-c-driver gnutls libgcrypt libidn libyaml libmicrohttpd nghttp2
 ```
 
-Install Meson using Python.
+Configure GCC PATH
 ```bash
-$ sudo pip install --upgrade pip
-$ sudo pip install meson
+$ setenv LIBRARY_PATH /usr/local/lib
+$ setenv C_INCLUDE_PATH /usr/local/include
+
+OR
+
+$ export LIBRARY_PATH=/usr/local/lib
+$ export C_INCLUDE_PATH=/usr/local/include
 ```
 
 Git clone.
@@ -128,4 +141,3 @@ The WebUI runs as an [npm](https://www.npmjs.com/) script.
 ```bash
 $ npm run dev
 ```
-
