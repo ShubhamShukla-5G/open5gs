@@ -96,7 +96,6 @@ libsmf_sources = files('''
 
 libsmf = static_library('smf',
     sources : libsmf_sources,
-    link_with : libipfw,
     dependencies : [libapp_dep,
                     libsbi_dep,
                     libngap_dep,

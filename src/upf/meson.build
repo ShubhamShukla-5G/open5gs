@@ -64,7 +64,6 @@ libupf_sources = files('''
 
 libupf = static_library('upf',
     sources : libupf_sources,
-    link_with : libipfw,
     dependencies : [
         libapp_dep, libdiameter_gx_dep, libgtp_dep, libpfcp_dep, libtun_dep
     ],
