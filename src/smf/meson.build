@@ -102,8 +102,7 @@ libsmf = static_library('smf',
                     libnas_5gs_dep,
                     libdiameter_gx_dep,
                     libgtp_dep,
-                    libpfcp_dep,
-                    libipfw_dep],
+                    libpfcp_dep],
     install : false)
 
 libsmf_dep = declare_dependency(
@@ -114,8 +113,7 @@ libsmf_dep = declare_dependency(
                     libnas_5gs_dep,
                     libdiameter_gx_dep,
                     libgtp_dep,
-                    libpfcp_dep,
-                    libipfw_dep])
+                    libpfcp_dep])
 
 smf_sources = files('''
     app.c
