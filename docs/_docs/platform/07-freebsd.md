@@ -3,10 +3,10 @@ title: FreeBSD
 head_inline: "<style> .blue { color: blue; } </style>"
 ---
 
-This guide is based on **FreeBSD-12.2-STABLE**.
+This guide is based on **FreeBSD-11.4-STABLE**.
 {: .blue}
 
-## Install **FreeBSD-12.2-STABLE** from Vagrant box (optional)
+## Install **FreeBSD-11.4-STABLE** from Vagrant box (optional)
 ---
 Vagrant provides a simple way to create and deploy Virtual Machines from
 pre-built images using VirtualBox, libvirt, or VMWare as a hypervisor engine.
@@ -20,7 +20,7 @@ The instructions to install Vagrant are provided at
 [vagrantup.com](https://www.vagrantup.com/).
 
 
-### Create a FreeBSD-12.2-STABLE Virtual Machine using Vagrant
+### Create a FreeBSD-11.4-STABLE Virtual Machine using Vagrant
 ---
 
 Use the supplied `Vagrantfile` in the `vagrant` directory to create the
