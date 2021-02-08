@@ -6,6 +6,50 @@ head_inline: "<style> .blue { color: blue; } </style>"
 This guide is based on **FreeBSD-12.2-STABLE**.
 {: .blue}
 
+## Install **FreeBSD-12.2-STABLE** from Vagrant box (optional)
+---
+Vagrant provides a simple way to create and deploy Virtual Machines from
+pre-built images using VirtualBox, libvirt, or VMWare as a hypervisor engine.
+This allows the user to quickly create a virtual machine without the hassle
+of installing the operating system by hand.
+
+### Install Vagrant
+---
+
+The instructions to install Vagrant are provided at
+[vagrantup.com](https://www.vagrantup.com/).
+
+
+### Create a FreeBSD-12.2-STABLE Virtual Machine using Vagrant
+---
+
+Use the supplied `Vagrantfile` in the `vagrant` directory to create the
+virtual machine.
+
+Note that this Vagrantfile is identical to the base CentOS 8 box, with
+the exception that the amount of virtual memory has been increased to 1GB:
+
+```bash
+cd vagrant/freebsd
+vagrant up --provider virtualbox
+```
+
+### Log into the newly created CentOS VM
+---
+
+Use SSH to log into the CentOS 8 VM:
+
+```bash
+vagrant ssh
+```
+
+Note that the Open5GS source is *not* copied into the VM.  The instructions
+below provide the step by step instructions for setting up Open5GS for
+either a bare metal or virtual CentOS 8 system.
+
+The rest of the commands below are performed inside the CentOS VM as the
+user 'vagrant', or on your bare metal CentOS 8 system as any normal user.
+
 ### Getting MongoDB
 ---
 
@@ -65,13 +109,14 @@ Install the depedencies for building the source code.
 $ sudo pkg install meson ninja gcc bison gsed pkgconf git mongo-c-driver gnutls libgcrypt libidn libyaml libmicrohttpd nghttp2
 ```
 
-Configure GCC PATH
+Configure gcc PATH
 ```bash
 $ setenv LIBRARY_PATH /usr/local/lib
 $ setenv C_INCLUDE_PATH /usr/local/include
+```
 
-OR
-
+If you are using BASH instead of default CSH,
+```bash
 $ export LIBRARY_PATH=/usr/local/lib
 $ export C_INCLUDE_PATH=/usr/local/include
 ```
